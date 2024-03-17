@@ -10,7 +10,8 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import Trombinoscope from "./components/Trombinoscope";
+import FormationDetails from "./components/FormationDetails";
+
 
 function App() {
   const isLoggedIn = Cookies.get("isLoggedIn") === "true";
@@ -31,8 +32,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/logout" element={<h1>Logout</h1>} />
-            <Route path="/trombinoscope" element={<Trombinoscope />} />
+            <Route path="/formations/:idformation" element={<FormationDetails />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
+
           </Routes>
         </Router>
       </div>

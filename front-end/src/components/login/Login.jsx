@@ -13,6 +13,9 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const hashedPass = CryptoJS.MD5(pass).toString();
+    console.log("Email :", email);
+    console.log("Mot de passe :", pass);
+    console.log("Mot de passe hashé :", hashedPass);
     try {
       const response = await axios.get(
         "http://localhost:3001/login?email=" + email + "&pass=" + hashedPass
@@ -20,9 +23,14 @@ function Login() {
 
       if (response.status === 200) {
         // Enregistrement de la session dans les cookies
+        console.log("Réponse de la requête Axios :", response);
+        /* decomposer la réponse et récuperer le nom, le prénom, l'adresse mail */
+        const { nom, prenom, userId } = response.data;
         Cookies.set("isLoggedIn", true);
         Cookies.set("email", email);
-
+        Cookies.set("nom", nom);
+        Cookies.set("prenom", prenom);
+        Cookies.set("userId", userId);
         setLoginResult("Connexion réussie !");
         window.location.reload();
       } else {
