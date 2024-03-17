@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 17, 2024 at 03:40 PM
+-- Generation Time: Mar 17, 2024 at 04:24 PM
 -- Server version: 11.4.0-MariaDB
 -- PHP Version: 8.2.1
 
@@ -34,6 +34,14 @@ CREATE TABLE `classes` (
   `formation_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Dumping data for table `classes`
+--
+
+INSERT INTO `classes` (`classe_id`, `nom`, `description`, `formation_id`) VALUES
+(1, 'Classe A', 'Description de la classe A', 1),
+(2, 'Classe B', 'Description de la classe B', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -46,6 +54,15 @@ CREATE TABLE `eleves` (
   `prenom` varchar(255) DEFAULT NULL,
   `classe_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `eleves`
+--
+
+INSERT INTO `eleves` (`eleve_id`, `nom`, `prenom`, `classe_id`) VALUES
+(1, 'Martin', 'Julie', 1),
+(2, 'Dubois', 'Pierre', 1),
+(3, 'Lefevre', 'Marie', 2);
 
 -- --------------------------------------------------------
 
@@ -60,6 +77,14 @@ CREATE TABLE `formations` (
   `ville` varchar(255) DEFAULT NULL,
   `pays` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `formations`
+--
+
+INSERT INTO `formations` (`formation_id`, `nom`, `adresse`, `ville`, `pays`) VALUES
+(1, 'Informatique', '123 Rue de l\'Informatique', 'Paris', 'France'),
+(2, 'Génie civil', '456 Avenue du Génie Civil', 'Lyon', 'France');
 
 -- --------------------------------------------------------
 
@@ -80,7 +105,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `nom`, `prenom`, `email`, `password`) VALUES
-(1, 'Michellod', 'Clément', 'clement.michellod@gmail.com', '56fa8b368158774db13a32a1f9014cf4');
+(1, 'Michellod', 'Clément', 'clement.michellod@gmail.com', '56fa8b368158774db13a32a1f9014cf4'),
+(2, 'Dupont', 'Jean', 'jean.dupont@example.com', 'password123');
 
 -- --------------------------------------------------------
 
@@ -92,6 +118,13 @@ CREATE TABLE `users_formations` (
   `user_id` int(11) NOT NULL,
   `formation_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `users_formations`
+--
+
+INSERT INTO `users_formations` (`user_id`, `formation_id`) VALUES
+(1, 1);
 
 --
 -- Indexes for dumped tables
@@ -139,25 +172,25 @@ ALTER TABLE `users_formations`
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `classe_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `classe_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `eleves`
 --
 ALTER TABLE `eleves`
-  MODIFY `eleve_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `eleve_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `formations`
 --
 ALTER TABLE `formations`
-  MODIFY `formation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `formation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
