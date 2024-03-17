@@ -24,6 +24,7 @@ function Login() {
         Cookies.set("email", email);
 
         setLoginResult("Connexion réussie !");
+        window.location.reload();
       } else {
         setLoginResult("Identifiants invalides.");
       }

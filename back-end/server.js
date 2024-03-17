@@ -53,20 +53,30 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/students", (req, res) => {
-  const email = "test@gmail.com";
-  const pass = "test";
-  const sql = `SELECT * FROM users WHERE email = '${email}' AND pass = '${pass}'`;
+  const sql = `SELECT * FROM student`;
   db.query(sql, (err, result) => {
     if (err) {
       console.error("Erreur lors de la récupération des étudiants :", err);
-      res
-        .status(500)
-        .send(
-          "Une erreur s'est produite lors de la récupération des étudiants."
-        );
-    } else {
-      res.status(200).send(result);
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la récupération des étudiants.",
+        details: err.message, // Cette ligne fournit plus de détails sur l'erreur
+      });
     }
+    // Si aucune erreur n'est survenue, renvoyer les données des étudiants
+    res.status(200).json(result);
+  });
+});
+
+app.get("/trombinoscope/:formationId/:classId", (req, res) => {
+  const { formationId, classId } = req.params;
+  const sql = `SELECT * FROM Person WHERE class_id = ${classId}`;
+  db.query(sql, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.json(result);
   });
 });
 
