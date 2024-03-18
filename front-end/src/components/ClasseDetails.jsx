@@ -69,8 +69,9 @@ function ClasseDetails() {
             ))}
           </ul>
         </div>
-        {/* bouton retour */}
-        <a href={`/formations/${classe.formation_id}`}>Retour à la formation</a>
+        <a className="btn-return" href={`/formations/${classe.formation_id}`}>
+          Retour à la formation
+        </a>
       </div>
     );
   }

@@ -8,16 +8,30 @@ function Header() {
   const handleLogout = () => {
     Cookies.remove("isLoggedIn");
     Cookies.remove("email");
+    Cookies.remove("nom");
+    Cookies.remove("prenom");
+    Cookies.remove("userId");
     window.location.reload();
   };
 
-  return (
-    <div className="header">
-      <h1>My Website</h1>
-      <p>Vous êtes connecté !</p>
-      <button onClick={handleLogout}>Déconnexion</button>
-    </div>
-  );
+  if (Cookies.get("isLoggedIn") !== "true") {
+    return (
+      <div className="header">
+        <h1>My Website</h1>
+        <p>Vous n'êtes pas connecté !</p>
+      </div>
+    );
+  }
+
+  if (Cookies.get("isLoggedIn") === "true") {
+    return (
+      <div className="header">
+        <h1>My Website</h1>
+        <p>Vous êtes connecté !</p>
+        <button onClick={handleLogout}>Déconnexion</button>
+      </div>
+    );
+  }
 }
 
 export default Header;

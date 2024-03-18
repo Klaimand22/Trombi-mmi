@@ -32,7 +32,8 @@ function Login() {
         Cookies.set("prenom", prenom);
         Cookies.set("userId", userId);
         setLoginResult("Connexion réussie !");
-        window.location.reload();
+        /* redirger vers /home */
+        window.location.href = "/home";
       } else {
         setLoginResult("Identifiants invalides.");
       }
@@ -45,7 +46,6 @@ function Login() {
 
   const isLoggedIn = Cookies.get("isLoggedIn") === "true";
   const handleLogout = () => {
-    const emailCookie = Cookies.get("email");
     Cookies.remove("isLoggedIn");
     Cookies.remove("email");
     window.location.reload();
@@ -90,6 +90,11 @@ function Login() {
           <p>{loginResult}</p>
         </div>
       )}
+
+      <div>
+        <h2>Créer un compte</h2>
+        <a href="/register">S'inscrire</a>
+      </div>
     </div>
   );
 }

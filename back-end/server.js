@@ -50,6 +50,53 @@ app.get("/login", (req, res) => {
   });
 });
 
+/* ------------------------------Inscription----------------------------- */
+app.get("/register", (req, res) => {
+  const prenom = req.query.prenom;
+  const nom = req.query.nom;
+  const email = req.query.email;
+  const password = req.query.password;
+
+  // Vérifier si l'email est déjà utilisé
+  const checkEmailQuery = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
+  db.query(checkEmailQuery, [email], (checkErr, checkResult) => {
+    if (checkErr) {
+      console.error(
+        "Erreur lors de la vérification de l'adresse e-mail :",
+        checkErr
+      );
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la vérification de l'adresse e-mail.",
+        details: checkErr.message,
+      });
+    }
+
+    // Vérifier si l'email est déjà utilisé
+    if (checkResult[0].count > 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Adresse e-mail déjà utilisée. Veuillez en choisir une autre.",
+      });
+    }
+
+    // Si l'email n'est pas déjà utilisé, procéder à l'inscription
+    const sql = `INSERT INTO users (prenom, nom, email, password) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [prenom, nom, email, password], (insertErr, result) => {
+      if (insertErr) {
+        console.error("Erreur lors de l'inscription :", insertErr);
+        return res.status(500).json({
+          error: true,
+          message: "Une erreur s'est produite lors de l'inscription.",
+          details: insertErr.message,
+        });
+      }
+      res.status(200).json({ message: "Inscription réussie !" });
+      console.log(prenom + " " + nom + " " + email + " " + password);
+    });
+  });
+});
 /* ------------------------------Récuperation des étudiants----------------------------- */
 
 app.get("/students", (req, res) => {
