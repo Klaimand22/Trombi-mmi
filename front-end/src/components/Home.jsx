@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -16,7 +18,9 @@ function Home() {
   // Fonction pour récupérer les formations de l'utilisateur
   const fetchUserFormations = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/user/formations?userId=" + userId);
+      const response = await axios.get(
+        "http://localhost:3001/formations?userId=" + userId
+      );
       setUserFormations(response.data);
       console.log("Formations de l'utilisateur :", response.data);
     } catch (error) {
@@ -30,8 +34,10 @@ function Home() {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-center">Bienvenue, {prenom} {nom} !</h2>
+    <div className="container">
+      <h2 className="text-center">
+        Bienvenue, {prenom} {nom} !
+      </h2>
       <div className="form-group">
         <label>Sélectionner une formation :</label>
         <div>
