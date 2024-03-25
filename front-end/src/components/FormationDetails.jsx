@@ -1,10 +1,8 @@
-/** @format */
-
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import LoadingSpinner from "./LoadingSpinner";
+import RemoveFormation from "./Remove/RemoveFormation";
 
 function FormationDetails() {
   const { idformation } = useParams();
@@ -42,29 +40,53 @@ function FormationDetails() {
     fetchClasses();
   }, []);
 
-  if (Object.keys(formation).length === 0 || classes.length === 0) {
-    return <LoadingSpinner />;
-  } else {
+  if (classes.length === 0) {
     return (
       <div>
         <h2 className="text-center">Détails de la formation</h2>
+        <RemoveFormation idformation={idformation} />
         <div>
           <h3>{formation.nom}</h3>
+          <h4>Code de partage : {formation.code_partage}</h4>
           <p>
             {formation.adresse} - {formation.ville} - {formation.pays}
             <br />
           </p>
         </div>
+        <a
+          href={`/formation/${idformation}/AjouterClasse?nom=${formation.nom}&ville=${formation.ville}`}
+        >
+          {" "}
+          Ajouter une classe
+        </a>
+        {/* bouton retour  */}
+        <a href="/home">Retour à l'accueil</a>
+      </div>
+    );
+  } else {
+    return (
+      <div className="app-size">
         <div>
-          <h3>Classes</h3>
-          <ul>
-            {classes.map((classe) => (
-              <a key={classe.classe_id} href={`/classes/${classe.classe_id}`}>
-                <li>{classe.nom}</li>
-              </a>
-            ))}
-          </ul>
+          <RemoveFormation idformation={idformation} />
+            <h1>{formation.nom}</h1>
+            <h2>
+              {formation.adresse} - {formation.ville} - {formation.pays}
+              <br />
+            </h2>
         </div>
+        <div className="classes-list">
+          {classes.map((classe) => (
+            <a key={classe.classe_id} href={`/classes/${classe.classe_id}`}>
+              {classe.nom}
+            </a>
+          ))}
+        </div>
+        <a
+          href={`/formation/${idformation}/AjouterClasse?nom=${formation.nom}&ville=${formation.ville}`}
+        >
+          {" "}
+          Ajouter une classe
+        </a>
         {/* bouton retour  */}
         <a href="/home">Retour à l'accueil</a>
       </div>

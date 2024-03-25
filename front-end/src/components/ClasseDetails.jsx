@@ -44,37 +44,42 @@ function ClasseDetails() {
     fetchEtudiants();
   }, []);
 
-  if (Object.keys(classe).length === 0 || etudiants.length === 0) {
-    return <LoadingSpinner />;
-  } else {
-    return (
+  return (
+    <div className="app-size">
+      <h2 className="text-center">Détails de la classe</h2>
       <div>
-        <h2 className="text-center">Détails de la classe</h2>
-        <div>
-          <h3>{classe.nom}</h3>
-          <p>
-            {classe.description}
-            <br />
-          </p>
-        </div>
-        <div>
-          <h3>Étudiants</h3>
-          <ul>
-            {etudiants.map((etudiant) => (
-              <li key={etudiant.eleve_id}>
-                <a href={`/etudiants/${etudiant.classe_id}`}>
-                  {etudiant.nom} {etudiant.prenom}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <a className="btn-return" href={`/formations/${classe.formation_id}`}>
-          Retour à la formation
-        </a>
+        <h3>{classe.nom}</h3>
+        <p>
+          {classe.description}
+          <br/>
+        </p>
       </div>
-    );
-  }
+      <div>
+        <h3>Étudiants</h3>
+        {etudiants.length === 0 && <LoadingSpinner />}
+
+        <div className="etudiants-grid">
+          {etudiants.map((etudiant) => (
+            <a className="card" key={etudiant.eleve_id} href={`/etudiants/${etudiant.eleve_id}`}>
+              <img
+                src={etudiant.image_base64}
+                alt="photo"
+              />
+              <a href={`/etudiants/${etudiant.eleve_id}`}>
+                {etudiant.nom} {etudiant.prenom}
+              </a>
+            </a>
+          ))}
+          </div>
+      </div>
+      <a href={`/classes/${idclasse}/AjouterEleve`} className="btn-add">
+        Ajouter un élève
+      </a>
+      <a className="btn-return" href={`/formations/${classe.formation_id}`}>
+        Retour à la formation
+      </a>
+    </div>
+  );
 }
 
 export default ClasseDetails;

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import Cookies from "js-cookie";
+import "../../style/Login.scss";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -52,50 +53,54 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Connexion</h1>
-      {isLoggedIn ? (
-        <div>
-          <p>Vous êtes connecté !</p>
-          <button onClick={handleLogout}>Déconnexion</button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="pass">Mot de passe</label>
-            <input
-              type="password"
-              id="pass"
-              name="pass"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-            />
-          </div>
-          <button type="submit">Se connecter</button>
-        </form>
-      )}
-      {loginResult && (
-        <div>
-          <h2>Résultat de la connexion :</h2>
-          <p>{loginResult}</p>
-        </div>
-      )}
 
-      <div>
-        <h2>Créer un compte</h2>
-        <a href="/register">S'inscrire</a>
+      <div className="app-size">
+        <h1>Trombinosaure</h1>
+        <h2>Veuillez vous connecter</h2>
+        {isLoggedIn ? (
+          <div>
+            <p>Vous êtes connecté !</p>
+            <button onClick={handleLogout}>Déconnexion</button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email"></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                placeholder="Adresse e-mail"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+
+              <label htmlFor="pass"></label>
+              <input
+                type="password"
+                id="pass"
+                name="pass"
+                value={pass}
+                placeholder="Mot de passe"
+                onChange={(e) => setPass(e.target.value)}
+              />
+            </div>
+            <button type="submit">Se connecter</button>
+          </form>
+        )}
+        {loginResult && (
+          <div>
+            <h2>Résultat de la connexion :</h2>
+            <p>{loginResult}</p>
+          </div>
+        )}
+
+        <div>
+          <a href="/register">Pas de compte ?</a>
+        </div>
       </div>
-    </div>
+
   );
 }
 

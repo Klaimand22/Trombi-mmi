@@ -8,7 +8,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Cookies from "js-cookie";
-import "./style/App.css";
+import "./style/App.scss";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import FormationDetails from "./components/FormationDetails";
@@ -16,6 +16,10 @@ import ClasseDetails from "./components/ClasseDetails";
 import EleveDetails from "./components/EleveDetails";
 import Login from "./components/login/Login";
 import Register from "./components/login/Register";
+import AjouterEleve from "./components/Add/AjouterEleve";
+import AjouterFormation from "./components/Add/AjouterFormation";
+import AjouterClasse from "./components/Add/AjouterClasse";
+
 
 function App() {
   const isLoggedIn = Cookies.get("isLoggedIn") === "true";
@@ -36,15 +40,19 @@ function App() {
               />
               <Route path="/classes/:idclasse" element={<ClasseDetails />} />
               <Route path="/etudiants/:idetudiant" element={<EleveDetails />} />
+              <Route path="/classes/:idclasse/AjouterEleve" element={<AjouterEleve />} />
+              <Route path="/ajouter-formation" element={<AjouterFormation />} />
+              <Route path="/formation/:idformation/AjouterClasse" element={<AjouterClasse />} />
             </>
           ) : (
             <>
               <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="*" element={<Navigate to="/login" />} />
             </>
           )}
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </Router>
     </div>

@@ -57,15 +57,17 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Inscription</h2>
+    <div className="app-size">
+      <h1>Inscription</h1>
       <form onSubmit={handleSubmit}>
+        <div>
         <input
           type="text"
           placeholder="Prénom"
           value={prenom}
           onChange={(e) => setPrenom(e.target.value)}
         />
+
         <input
           type="text"
           placeholder="Nom"
@@ -90,9 +92,11 @@ const Register = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <button type="submit">S'inscrire</button>
+        <button type="submit" style={{ marginTop: "10px" }}> S'inscrire </button>
         {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
       </form>
+      <a href="/login" style={{ marginTop: "10px"  }}>Déjà inscrit ? Connectez-vous</a>
     </div>
   );
 };

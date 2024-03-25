@@ -17,7 +17,6 @@ function Header() {
   if (Cookies.get("isLoggedIn") !== "true") {
     return (
       <div className="header">
-        <h1>My Website</h1>
         <p>Vous n'êtes pas connecté !</p>
       </div>
     );
@@ -26,9 +25,14 @@ function Header() {
   if (Cookies.get("isLoggedIn") === "true") {
     return (
       <div className="header">
-        <h1>My Website</h1>
-        <p>Vous êtes connecté !</p>
+        <div className="name">
+        <h1> Bienvenue</h1>
+        <h2>{Cookies.get("prenom")} {Cookies.get("nom")}</h2>
+        </div>
+        <div className="menu">
         <button onClick={handleLogout}>Déconnexion</button>
+
+        </div>
       </div>
     );
   }

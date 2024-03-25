@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import "../style/Home.scss";
+import CodePartage from "./CodePartage";
 
 const nom = Cookies.get("nom");
 const prenom = Cookies.get("prenom");
@@ -34,26 +36,25 @@ function Home() {
   }, []);
 
   return (
-    <div className="container">
-      <h2 className="text-center">
-        Bienvenue, {prenom} {nom} !
-      </h2>
-      <div className="form-group">
-        <label>Sélectionner une formation :</label>
-        <div>
+    <div className="app-size" style={{ textAlign: "center" }}>
+
+        <h1>Vos formations</h1>
+        <div className="formations-grid">
           {userFormations.map((formation) => (
             <a
               key={formation.formation_id}
               href={`/formations/${formation.formation_id}`}
-              className="btn btn-primary mr-2"
+              className="card"
               onClick={() => setSelectedFormation(formation.formation_id)}
             >
-              {formation.nom}
+              {formation.nom} <br></br>-<br></br> {formation.ville}
             </a>
           ))}
         </div>
-      </div>
+        <CodePartage />
+        <a href="/ajouter-formation"> Ajouter une formation</a>
     </div>
+
   );
 }
 

@@ -1,0 +1,180 @@
+/** @format */
+/* IMPORT RESET CSS */
+
+@import url("./reset.css");
+
+/* IMPORT GOOGLE FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+:root {
+  --primary-color: #4382a5;
+  --secondary-color: #6c757d;
+  --tertiary-color: #11ABFA;
+  --text-color : #FFFFFF;
+  --color-error: #ff9b00;
+
+  --text-font : 'Lilita One', sans-serif;
+
+  font-family: var(--text-font);
+}
+
+
+
+h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text-color);
+  font-family: var(--text-font);
+}
+
+h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text-color);
+  font-family: var(--text-font);
+}
+
+button {
+  font-family: var(--text-font);
+  background-color: var(--tertiary-color);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--text-font);
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn {
+  background-color: var(--tertiary-color);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--text-font);
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline;
+    scale: 1.1;
+  }
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.5rem 0;
+}
+
+.app-container {
+  width: 100%;
+  margin: 0 auto;
+  min-height: 99vh;
+  background-color: var(--primary-color);
+}
+
+
+.app-size {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-height: 80vh;
+  width: 100%;
+  align-items: center;
+  border-radius: 8px;
+
+
+
+form {
+  display: flex;
+  flex-direction: column;
+
+
+  div {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    gap : 10px;
+
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    input{
+      padding: 10px;
+      border-radius: 30px;
+      border: 1px solid var(--tertiary-color);
+      width: 100%;
+      background-color: var(--tertiary-color);
+      color: var(--text-color);
+      font-family: var(--text-font);
+      font-size: 1.2rem;
+    }
+    input::placeholder {
+      color: var(--text-color);
+      font-family: var(--text-font);
+      font-size: 1.2rem;
+    }
+  }
+
+}}
+
+.error-message {
+  margin-top: 10px;
+  color: var(--color-error);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.classes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+a {
+  width: 100px;
+  height: 100px;
+  background-color: var(--tertiary-color);
+  gap: 100px;
+  text-align: center;
+}
+}

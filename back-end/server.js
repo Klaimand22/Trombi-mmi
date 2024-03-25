@@ -4,11 +4,15 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const multer = require("multer");
+const path = require("path");
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: "10mb" }));
+express.urlencoded({ extended: true });
+
 app.use(cors()); // permet à n'importe quelle origine d'accéder à notre API
-app.use(bodyParser.urlencoded({ extended: true })); // pour parser les requêtes POST
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -97,10 +101,11 @@ app.get("/register", (req, res) => {
     });
   });
 });
+
 /* ------------------------------Récuperation des étudiants----------------------------- */
 
 app.get("/students", (req, res) => {
-  const sql = `SELECT * FROM student`;
+  const sql = `SELECT * FROM eleves`;
   db.query(sql, (err, result) => {
     if (err) {
       console.error("Erreur lors de la récupération des étudiants :", err);
@@ -116,7 +121,72 @@ app.get("/students", (req, res) => {
   });
 });
 
-/*  ------------------------------Récuperation des formations----------------------------- */
+/* ------------------------------Récuperation des formations la ou l'utilisateur n'est pas inscrit----------------------------- */
+
+app.get("/liste-formation", (req, res) => {
+  console.log("userId", req.query.userId);
+  const sql = `SELECT * FROM formations WHERE formation_id NOT IN (SELECT formation_id FROM users_formations WHERE user_id = ${req.query.userId})`;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des formations :", err);
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la récupération des formations.",
+        details: err.message,
+      });
+    }
+    res.status(200).json(result);
+  });
+});
+
+/* ------------------------------Ajout d'une formation à un utilisateur----------------------------- */
+
+app.post("/ajouter-formation-utilisateur", (req, res) => {
+  const { userId, formationId } = req.body;
+  console.log("userId", userId, "formationId", formationId);
+  const sql = `INSERT INTO users_formations (user_id, formation_id) VALUES (?, ?)`;
+  db.query(sql, [userId, formationId], (err, result) => {
+    if (err) {
+      console.error(
+        "Erreur lors de l'ajout de la formation à l'utilisateur :",
+        err
+      );
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de l'ajout de la formation à l'utilisateur.",
+        details: err.message,
+      });
+    }
+    res.status(200).json({ message: "Formation ajoutée à l'utilisateur !" });
+  });
+});
+
+/* ------------------------------Suppression d'une formation d'un utilisateur----------------------------- */
+
+app.post("/remove-formation-utilisateur", (req, res) => {
+  const { userId, idformation } = req.body;
+  const sql = `DELETE FROM users_formations WHERE user_id = ? AND formation_id = ?`;
+  db.query(sql, [userId, idformation], (err, result) => {
+    if (err) {
+      console.error(
+        "Erreur lors de la suppression de la formation de l'utilisateur :",
+        err
+      );
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la suppression de la formation de l'utilisateur.",
+        details: err.message,
+      });
+    }
+    res.status(200).json({ message: "Formation supprimée de l'utilisateur !" });
+  });
+});
+
+
+/*  ------------------------------Récuperation des formations liées à un utilisateur----------------------------- */
 
 app.get("/formations", (req, res) => {
   const userId = req.query.userId;
@@ -151,6 +221,28 @@ app.get("/formations/:idformation", (req, res) => {
       });
     }
     res.status(200).json(result[0]);
+  });
+});
+
+/* ------------------------------Ajout d'une formation à la base de données----------------------------- */
+
+app.post("/ajouter-formation", (req, res) => {
+  const { nom, ville, adresse, pays } = req.body;
+  /* générer un code aléatoire à 6 chiffres */
+  const codePartage = Math.floor(100000 + Math.random() * 900000);
+  const sql = `INSERT INTO formations (nom, ville, adresse, pays, code_partage) VALUES (?, ?, ?, ?, ?)`;
+  db.query(sql, [nom, ville, adresse, pays, codePartage], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de l'ajout de la formation :", err);
+      return res.status(500).json({
+        error: true,
+        message: "Une erreur s'est produite lors de l'ajout de la formation.",
+        details: err.message,
+      });
+    }
+    // renvoyer l'ID de la formation
+    res.status(200).json({ formation_id: result.insertId, message: "Formation ajoutée avec succès !" });
+
   });
 });
 
@@ -189,6 +281,25 @@ app.get("/classes/:idclasse", (req, res) => {
       });
     }
     res.status(200).json(result[0]);
+  });
+});
+
+/* ------------------------------Ajout d'une classe à la base de données----------------------------- */
+
+app.post("/ajouter-classe", (req, res) => {
+  const { nom, description, idformation } = req.body;
+  const sql = `INSERT INTO classes (nom, description, formation_id) VALUES (?, ?, ?)`;
+  db.query(sql, [nom, description, idformation], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de l'ajout de la classe :", err);
+      return res.status(500).json({
+        error: true,
+        message: "Une erreur s'est produite lors de l'ajout de la classe.",
+        details: err.message,
+      });
+    } else {
+      res.status(200).json({ message: "Classe ajoutée avec succès !" });
+    }
   });
 });
 
@@ -232,4 +343,59 @@ app.get("/etudiants/:idetudiant", (req, res) => {
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Serveur en écoute sur le port ${port}`);
+});
+
+/* ------------------------------Ajout d'un étudiant avec image----------------------------- */
+
+app.post("/upload", (req, res) => {
+  const { firstName, lastName, image, classe_id } = req.body;
+
+  // Requête SQL pour insérer un nouvel élève dans la base de données
+  const sql = `INSERT INTO eleves (nom, prenom, classe_id, image_base64) VALUES (?, ?, ?, ?)`;
+  const values = [lastName, firstName, classe_id, image];
+
+  // Exécution de la requête SQL
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error adding student: ", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while adding the student" });
+      return;
+    }
+    console.log("Student added successfully");
+    res.status(200).json({ message: "Student added successfully" });
+  });
+});
+
+
+/* ------------------------------Vérification du code de partage----------------------------- */
+
+app.post("/verify-share-code", (req, res) => {
+  const { shareCode } = req.body;
+
+  // faire une requête SQL pour vérifier si le code de partage existe
+  const sql = `SELECT * FROM formations WHERE code_partage = ?`;
+
+  db.query(sql, [shareCode], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la vérification du code de partage :", err);
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la vérification du code de partage.",
+        details: err.message,
+      });
+    }
+
+    if (result.length > 0) {
+      console.log("Formation trouvée avec le code de partage :", result[0]);
+      // envoyer l'id de la formation
+      res.status(200).json({
+        formationId: result[0].formation_id,
+      });
+    } else {
+      res.status(400).json({ message: "Code de partage invalide" });
+    }
+  });
 });
