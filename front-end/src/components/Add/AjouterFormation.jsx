@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -82,19 +84,37 @@ const AjouterFormation = () => {
               value={nomFormation}
               onChange={handleNomFormationChange}
               placeholder="Nom de la formation"
+              required="required"
             />
-            <input type="text" value={ville} onChange={handleVilleChange} placeholder="Ville" />
-            <input type="text" value={adresse} onChange={handleAdresseChange} placeholder="Adresse" />
-            <input type="text" value={pays} onChange={handlePaysChange} placeholder="Pays" />
+            <input
+              type="text"
+              value={ville}
+              onChange={handleVilleChange}
+              placeholder="Ville"
+              required="required"
+            />
+            <input
+              type="text"
+              value={adresse}
+              onChange={handleAdresseChange}
+              placeholder="Adresse"
+              required="required"
+            />
+            <input
+              type="text"
+              value={pays}
+              onChange={handlePaysChange}
+              placeholder="Pays"
+            />
             <button type="submit">Ajouter</button>
           </div>
         </form>
+        <a href="/home" className="button">
+          Retour
+        </a>
       </div>
 
       {/* Bouton retour */}
-      <a href="/home" className="button">
-        Retour
-      </a>
     </div>
   );
 };

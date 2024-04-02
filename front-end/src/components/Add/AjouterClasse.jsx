@@ -1,64 +1,71 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+/** @format */
+
+import React from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-function AjouterClasse() {
-  const { idformation } = useParams();
-  const [nomFormation, setNomFormation] = useState("");
-  const [villeFormation, setVilleFormation] = useState("");
-
-  // Fonction pour obtenir les paramètres de l'URL
-  function getParameterByName(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(window.location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-  }
-
-  // Appel de la fonction pour récupérer les paramètres nom et ville
-  const nom = getParameterByName("nom");
-  const ville = getParameterByName("ville");
-
-  // Gestion de la soumission du formulaire
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const nomClasse = e.target[0].value;
-    const description = e.target[1].value;
-    console.log(nomClasse, description, idformation);
-
-    try {
-      const response = await axios.post("http://localhost:3001/ajouter-classe", {
-        nom: nomClasse,
-        description: description,
-        idformation: idformation,
-      });
-      if (response.status === 200) {
-        alert("Classe ajoutée avec succès !");
-        window.location.href = `/formations/${idformation}`;
+function AjouterClasse({ idformation }) {
+  const handleAddClass = () => {
+    Swal.fire({
+      title: "Ajouter une classe",
+      html: `
+        <input id="nomClasse" class="swal2-input" placeholder="Nom de la classe" required>
+        <input id="descriptionClasse" class="swal2-input" placeholder="Description">
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        const nomClasse = Swal.getPopup().querySelector("#nomClasse").value;
+        const descriptionClasse =
+          Swal.getPopup().querySelector("#descriptionClasse").value;
+        return { nomClasse, descriptionClasse };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const nomClasse = result.value.nomClasse.trim(); // Supprimer les espaces inutiles
+        if (nomClasse === "") {
+          // Vérifier si le nom de la classe est vide
+          Swal.fire(
+            "Erreur !",
+            "Veuillez saisir un nom pour la classe.",
+            "error"
+          );
+        } else {
+          axios
+            .post("http://localhost:3001/ajouter-classe", {
+              nom: nomClasse,
+              description: result.value.descriptionClasse,
+              idformation: idformation,
+            })
+            .then((response) => {
+              console.log("Classe ajoutée avec succès :", response.data);
+              // Actualiser la liste des classes
+              window.location.reload();
+              // Afficher une alerte de succès
+              Swal.fire(
+                "Succès !",
+                "La classe a été ajoutée avec succès.",
+                "success"
+              );
+            })
+            .catch((error) => {
+              console.error("Erreur lors de l'ajout de la classe :", error);
+              // Afficher une alerte d'erreur
+              Swal.fire(
+                "Erreur !",
+                "Une erreur s'est produite lors de l'ajout de la classe.",
+                "error"
+              );
+            });
+        }
       }
-    }
-    catch (error) {
-      console.error("Erreur lors de l'ajout de la classe :", error);
-    }
-    }
+    });
+  };
 
   return (
     <div>
-      <h1>
-        Ajouter une classe à la formation {nomFormation} à {villeFormation}
-      </h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nom de la classe :</label>
-          <input type="text" />
-        </div>
-        <div>
-          <label>Description :</label>
-          <input type="text" />
-        </div>
-        <button type="submit">Ajouter</button>
-      </form>
-      <a href={`/formations/${idformation}`}>Retour à la formation {nom}</a>
+      <button type="button" onClick={handleAddClass}>
+        Ajouter une classe
+      </button>
     </div>
   );
 }
