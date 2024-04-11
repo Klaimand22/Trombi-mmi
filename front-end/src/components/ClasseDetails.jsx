@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
+import AjouterEleve from "./Add/AjouterEleve";
 
 function ClasseDetails() {
   const { idclasse } = useParams();
@@ -51,7 +52,7 @@ function ClasseDetails() {
         <h3>{classe.nom}</h3>
         <p>
           {classe.description}
-          <br/>
+          <br />
         </p>
       </div>
       <div>
@@ -60,21 +61,20 @@ function ClasseDetails() {
 
         <div className="etudiants-grid">
           {etudiants.map((etudiant) => (
-            <a className="card" key={etudiant.eleve_id} href={`/etudiants/${etudiant.eleve_id}`}>
-              <img
-                src={etudiant.image_base64}
-                alt="photo"
-              />
+            <a
+              className="card"
+              key={etudiant.eleve_id}
+              href={`/etudiants/${etudiant.eleve_id}`}
+            >
+              <img src={etudiant.image_base64} alt="photo" />
               <a href={`/etudiants/${etudiant.eleve_id}`}>
                 {etudiant.nom} {etudiant.prenom}
               </a>
             </a>
           ))}
-          </div>
+        </div>
       </div>
-      <a href={`/classes/${idclasse}/AjouterEleve`} className="btn-add">
-        Ajouter un élève
-      </a>
+      <AjouterEleve idclasse={idclasse} />
       <a className="btn-return" href={`/formations/${classe.formation_id}`}>
         Retour à la formation
       </a>

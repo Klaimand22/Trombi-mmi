@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+/** @format */
 
-const AjouterEleve = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [image, setImage] = useState('');
-  const [base64Image, setBase64Image] = useState('');
-  const { idclasse } = useParams();
+import React, { useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import ReactDOMServer from "react-dom/server";
+import Swal from "sweetalert2";
+
+function AjouterEleve({ idclasse }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [image, setImage] = useState("");
+  const [base64Image, setBase64Image] = useState("");
 
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
@@ -23,89 +26,114 @@ const AjouterEleve = () => {
     convertToBase64(selectedImage);
   };
 
-  const convertToBase64 = (image) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onload = () => {
-      setBase64Image(reader.result);
-    };
-    reader.onerror = (error) => {
-      console.error('Error converting image to base64: ', error);
-    };
+  const convertToBase64 = async (image) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3001/upload', {
+      const base64 = await convertToBase64(image);
+      const response = await axios.post("http://localhost:3001/upload", {
         firstName,
         lastName,
-        image: base64Image,
+        image: base64,
         classe_id: idclasse,
       });
-      console.log('Student added successfully:', response.data);
+      console.log("Student added successfully:", response.data);
       // Reset form fields after successful submission
-      setFirstName('');
-      setLastName('');
-      setImage('');
-      setBase64Image('');
-      alert(`l'élève ${firstName} ${lastName} a été ajouté avec succès !`);
+      setFirstName("");
+      setLastName("");
+      setImage("");
+      setBase64Image("");
+      Swal.fire({
+        title: "Success!",
+        text: `Student ${firstName} ${lastName} added successfully!`,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
     } catch (error) {
-      console.error('Error adding student:', error);
+      console.error("Error adding student:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred while adding the student.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
+  };
+
+  const openForm = () => {
+    const formHtml = ReactDOMServer.renderToString(
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="firstName">First Name:</label>
+          <input
+            type="text"
+            id="firstName"
+            value={firstName}
+            onChange={handleFirstNameChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="lastName">Last Name:</label>
+          <input
+            type="text"
+            id="lastName"
+            value={lastName}
+            onChange={handleLastNameChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="image">Image:</label>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            capture="camera"
+            required
+          />
+          {base64Image && (
+            <img
+              src={base64Image}
+              alt="student"
+              width={200}
+              height={200}
+              style={{ objectFit: "cover" }}
+            />
+          )}
+        </div>
+        <button type="submit">Add Student</button>
+      </form>
+    );
+
+    Swal.fire({
+      title: "Add Student",
+      html: formHtml,
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonText: "Close",
+    });
   };
 
   return (
     <div>
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="firstName">First Name:</label>
-        <input
-          type="text"
-          id="firstName"
-          value={firstName}
-          onChange={handleFirstNameChange}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="lastName">Last Name:</label>
-        <input
-          type="text"
-          id="lastName"
-          value={lastName}
-          onChange={handleLastNameChange}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="image">Image:</label>
-        <input
-          type="file"
-          id="image"
-          accept="image/*"
-          onChange={handleImageChange}
-          capture="camera" // Ajout de l'attribut capture pour utiliser la caméra
-          required
-        />
-
-        {/* Ajouter un aperçu de l'image */}
-        {base64Image && (
-          <img
-            src={base64Image}
-            alt="student"
-            width={200}
-            height={200}
-            style={{ objectFit: 'cover' }}
-          />
-        )}
-      </div>
-      <button type="submit">Add Student</button>
-    </form>
-    <a href={`/classes/${idclasse}`}> Retour à la classe</a>
+      <button onClick={openForm}>Add Student</button>
     </div>
   );
-};
+}
 
 export default AjouterEleve;
