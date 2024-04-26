@@ -23,7 +23,6 @@ function CodePartage() {
       );
       if (response.status === 200) {
         const formationId = response.data.formationId;
-        console.log("formationId", formationId, "userId", userId);
 
         const response2 = await axios.post(
           "http://localhost:3001/ajouter-formation-utilisateur",

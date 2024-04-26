@@ -55,7 +55,7 @@ function Login() {
   return (
 
       <div className="app-size">
-        <h1>Trombinosaure</h1>
+        <h1>King Face</h1>
         <h2>Veuillez vous connecter</h2>
         {isLoggedIn ? (
           <div>

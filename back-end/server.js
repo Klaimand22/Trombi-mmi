@@ -15,10 +15,10 @@ express.urlencoded({ extended: true });
 app.use(cors()); // permet à n'importe quelle origine d'accéder à notre API
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "trombi-mmi",
+  host: "mysql-klaimand.alwaysdata.net",
+  user: "klaimand_trombi",
+  password: "klaimandMMI",
+  database: "klaimand_trombi",
 });
 
 db.connect((err) => {
@@ -97,7 +97,6 @@ app.get("/register", (req, res) => {
         });
       }
       res.status(200).json({ message: "Inscription réussie !" });
-      console.log(prenom + " " + nom + " " + email + " " + password);
     });
   });
 });
@@ -124,7 +123,6 @@ app.get("/students", (req, res) => {
 /* ------------------------------Récuperation des formations la ou l'utilisateur n'est pas inscrit----------------------------- */
 
 app.get("/liste-formation", (req, res) => {
-  console.log("userId", req.query.userId);
   const sql = `SELECT * FROM formations WHERE formation_id NOT IN (SELECT formation_id FROM users_formations WHERE user_id = ${req.query.userId})`;
   db.query(sql, (err, result) => {
     if (err) {
@@ -144,7 +142,6 @@ app.get("/liste-formation", (req, res) => {
 
 app.post("/ajouter-formation-utilisateur", (req, res) => {
   const { userId, formationId } = req.body;
-  console.log("userId", userId, "formationId", formationId);
   const sql = `INSERT INTO users_formations (user_id, formation_id) VALUES (?, ?)`;
   db.query(sql, [userId, formationId], (err, result) => {
     if (err) {
@@ -399,3 +396,26 @@ app.post("/verify-share-code", (req, res) => {
     }
   });
 });
+
+
+
+/* ------------------------------Suppression d'un étudiant----------------------------- */
+
+app.post("/etudiants/:idetudiant/delete", (req, res) => {
+  const idetudiant = req.params.idetudiant;
+  const sql = `DELETE FROM eleves WHERE eleve_id = ?`;
+  db.query(sql, [idetudiant], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la suppression de l'étudiant :", err);
+      return res.status(500).json({
+        error: true,
+        message:
+          "Une erreur s'est produite lors de la suppression de l'étudiant.",
+        details: err.message,
+      });
+    }
+    res.status(200).json({ message: "Étudiant supprimé avec succès !" });
+  });
+});
+
+

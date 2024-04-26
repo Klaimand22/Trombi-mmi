@@ -12,7 +12,6 @@ function ClasseDetails() {
   const [classe, setClasse] = useState({});
   const [etudiants, setEtudiants] = useState([]);
   const userId = Cookies.get("userId");
-  console.log("userId", userId, "idclasse", idclasse);
 
   const fetchClasse = async () => {
     try {
@@ -20,7 +19,6 @@ function ClasseDetails() {
         "http://localhost:3001/classes/" + idclasse
       );
       setClasse(response.data);
-      console.log("Classe :", response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération de la classe :", error);
     }
@@ -34,7 +32,6 @@ function ClasseDetails() {
         },
       });
       setEtudiants(response.data);
-      console.log("Etudiants :", response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des étudiants :", error);
     }
@@ -49,15 +46,14 @@ function ClasseDetails() {
     <div className="app-size">
       <h2 className="text-center">Détails de la classe</h2>
       <div>
-        <h3>{classe.nom}</h3>
+        <h2 className="text-center">{classe.nom}</h2>
         <p>
           {classe.description}
           <br />
         </p>
       </div>
       <div>
-        <h3>Étudiants</h3>
-        {etudiants.length === 0 && <LoadingSpinner />}
+
 
         <div className="etudiants-grid">
           {etudiants.map((etudiant) => (
@@ -73,8 +69,9 @@ function ClasseDetails() {
             </a>
           ))}
         </div>
+
       </div>
-      <AjouterEleve idclasse={idclasse} />
+      <a className="btn-add" href={`/classes/${idclasse}/AjouterEleve?classe_name=${classe.nom}`}> Ajouter un étudiant </a>
       <a className="btn-return" href={`/formations/${classe.formation_id}`}>
         Retour à la formation
       </a>
